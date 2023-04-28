@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import os
 
 # Definir dimensiones de la ventana
 WIDTH, HEIGHT = 450,450
@@ -335,7 +336,8 @@ fichas_images={}
 screen2=None
 separado=[]
 control=-1
-image = pygame.image.load(f'imagenes/eliminada.png')
+ruta_imagen = os.path.join("imagenes", "eliminada.png")
+image = pygame.image.load(ruta_imagen)
 eliminada = pygame.transform.scale(image, (50, 50))
 # Crear un botón para iniciar el juego
 play_button = Button(WIDTH/2-50, HEIGHT/2-25, 100, 50, "Jugar", (255, 255, 255), (0, 128, 0), show_game_screen)
