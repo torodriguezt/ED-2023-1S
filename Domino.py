@@ -50,16 +50,36 @@ def eliminar_ficha_interfaz(i, j):
     return 
 
 def actualizacionFichasJugador(a,b,jugar,i):
+    global fichas_12
+    global fichas_22
+    global fichas_32
+    global fichas_42
     for j in range(len(jugar)):
         if jugar[j]==(a, b):
             print(f"La ficha seleccionada fue ({a},{b})")
             jugar.remove((a, b))
-            eliminar_ficha_interfaz(i, j)
+            if i==0:
+                p=fichas_12.index((a, b))
+            elif i==1:
+                p=fichas_22.index((a, b))   
+            elif i==2:
+                p=fichas_32.index((a, b))  
+            else:
+                p=fichas_42.index((a, b))  
+            eliminar_ficha_interfaz(i, p)
             break
         elif jugar[j]==(b, a):
             print(f"La ficha seleccionada fue ({b},{a})")
             jugar.remove((b, a))
-            eliminar_ficha_interfaz(i, j)
+            if i==0:
+                p=fichas_12.index((b, a))
+            elif i==1:
+                p=fichas_22.index((b, a))   
+            elif i==2:
+                p=fichas_32.index((b, a))  
+            else:
+                p=fichas_42.index((b, a))  
+            eliminar_ficha_interfaz(i, p)
             break
     return
 
@@ -156,7 +176,7 @@ def game():
         ficha_a_poner = -1
         
         #Juegan los bots
-        if control>4:   
+        if control==0:   
             if domino[-1][1]!=domino[0][0] and (domino[-1][1],domino[-1][1]) in paresJugador and (domino[0][0],domino[0][0]) in paresJugador:
                 print("Puedes jugador dobles, deseas hacerlo?")
                 respuesta=input("Ingresa y para si, en caso contrario, cualquier otra cosa")
@@ -164,8 +184,10 @@ def game():
                     print("El jugador juega dobles\n")
                     actualizacionFichasJugador(domino[-1][1],domino[-1][1],jugar,control)
                     actualizacionDomino(domino[-1][1],domino[-1][1],domino)
+                    pygame.display.update()
                     actualizacionFichasJugador(domino[0][0],domino[0][0],jugar,control)
                     actualizacionDomino(domino[0][0],domino[0][0],domino)
+                    pygame.display.update()
                     actualizacionParesJugador(domino[0][0],domino[0][0],paresJugador)
                     actualizacionParesJugador(domino[-1][1],domino[-1][1],paresJugador)
                     continue
@@ -176,7 +198,6 @@ def game():
                     j = entrada1()
                 elif len(j) == 1 and j[0] == 0:
                     break
-
                 elif j not in jugar and j[::-1] not in jugar:
                     print("No tienes esa ficha")
                     print("Porfavor ingresa una ficha valida: ")
@@ -242,6 +263,7 @@ def game():
         #se actualiza el juego
         actualizacionFichasJugador(a,b,jugar,control)
         actualizacionDomino(a,b,domino)
+        pygame.display.update()
     
     if control==0:
       print("Ganaste el juego en horabuena!!\n")
@@ -260,6 +282,10 @@ def show_game_screen():
     global fichas_2
     global fichas_3
     global fichas_4
+    global fichas_12
+    global fichas_22
+    global fichas_32
+    global fichas_42
     global fichas_images
     global screen2
     WIDTH, HEIGHT = 450,450
@@ -283,6 +309,11 @@ def show_game_screen():
     fichas_2 = random.sample(list(set(fichas) - set(fichas_1)), 7)
     fichas_3 = random.sample(list(set(fichas) - set(fichas_1) - set(fichas_2)), 7)
     fichas_4 = list(set(fichas) - set(fichas_1) - set(fichas_2) - set(fichas_3))
+
+    fichas_12=fichas_1.copy()
+    fichas_22=fichas_2.copy()
+    fichas_32=fichas_3.copy()
+    fichas_42=fichas_4.copy()
 
     # Mostrar las imágenes de las fichas del jugador 2 (rotadas 90 grados a la derecha)
     x = 0
@@ -332,6 +363,10 @@ fichas_1=[]
 fichas_2=[]
 fichas_3=[]
 fichas_4=[]
+fichas_12=[]
+fichas_22=[]
+fichas_32=[]
+fichas_42=[]
 fichas_images={}
 screen2=None
 separado=[]
@@ -344,7 +379,6 @@ play_button = Button(WIDTH/2-50, HEIGHT/2-25, 100, 50, "Jugar", (255, 255, 255),
 
 # Mostrar el botón en la ventana
 play_button.draw(screen)
-
 # Actualizar la ventana
 pygame.display.update()
 
