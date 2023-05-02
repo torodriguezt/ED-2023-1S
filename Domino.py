@@ -200,8 +200,23 @@ def caja_texto(duracion):
             active = False
             return text
 
-def game():
+def imprime_mensaje(m):
+    global screen2
+    font = pygame.font.SysFont(None,25)
+    mensaje = font.render(m, True, "white")
+    screen2.blit(mensaje, (100,300))
+    pygame.display.update()
+
+def imprime_text(m):
+    global screen2
+    inputr = pygame.Rect(50, 90,350, 30)
+    pygame.draw.rect(screen2, (0,0,0), inputr)
+    font = pygame.font.SysFont(None,20)
+    mensaje = font.render(m, True, "white")
+    screen2.blit(mensaje, (125,90))
+    pygame.display.update()
     
+def game():
     global fichas_1
     global fichas_2
     global fichas_3
@@ -242,7 +257,7 @@ def game():
         if control!=0:
             print(f"Turno del bot {control}")
         else:
-            print(f"Turno del jugador")
+            imprime_text("Turno del jugador")
 
         jugar = separado[control]
         ficha_a_poner = -1
@@ -250,9 +265,8 @@ def game():
         #Juegan los bots
         if control==0:   
             if domino[-1][1]!=domino[0][0] and (domino[-1][1],domino[-1][1]) in paresJugador and (domino[0][0],domino[0][0]) in paresJugador:
-                print("Puedes jugador dobles, deseas hacerlo?")
-                print("Ingresa y para si, en caso contrario, cualquier otra cosa")
-                respuesta=caja_texto(60000)
+                imprime_text("Puedes jugador dobles, presiona y")
+                respuesta=caja_texto(30000)
                 if respuesta=="y":
                     print("El jugador juega dobles\n")
                     actualizacionFichasJugador(domino[-1][1],domino[-1][1],jugar,control)
@@ -264,20 +278,20 @@ def game():
                     actualizacionParesJugador(domino[0][0],domino[0][0],paresJugador)
                     actualizacionParesJugador(domino[-1][1],domino[-1][1],paresJugador)
                     continue
-            j = entrada1(caja_texto(60000))
+            j = entrada1(caja_texto(30000))
             while True:
                 if j==():
                     print("Se acabo tu tiempo para jugar")
                     break
                 if len(j) != 2 and j[0] != 0 or type(j[0])!=int:
                     print("Porfavor ingresa una ficha valida: ")
-                    j = entrada1(caja_texto(60000))
+                    j = entrada1(caja_texto(30000))
                 elif len(j) == 1 and j[0] == 0:
                     break
                 elif j not in jugar and j[::-1] not in jugar:
                     print("No tienes esa ficha")
                     print("Porfavor ingresa una ficha valida: ")
-                    j = entrada1(caja_texto(60000))
+                    j = entrada1(caja_texto(30000))
                 elif j in jugar or j[::-1] in jugar:
                     arriba, abajo = j
                     if arriba == domino[-1][1] or abajo == domino[0][0] or arriba == domino[0][0] or abajo == domino[-1][1]:
@@ -289,7 +303,7 @@ def game():
                         break
                     else:
                         print("Porfavor ingresa una ficha valida: ")
-                        j = entrada1(caja_texto(60000))
+                        j = entrada1(caja_texto(30000))
         else:
             r=random.random()
             #Probabilidad de que el bot pase turno 0.2
@@ -342,9 +356,9 @@ def game():
         pygame.display.update()
     
     if control==0:
-      print("Ganaste el juego en horabuena!!\n")
+      imprime_mensaje("Ganaste el juego en horabuena!!")
     else:
-        print(f"Gano el jugador {control + 1}\n")
+        imprime_mensaje(f"Gano el jugador {control + 1}")
 
     print("Fichas de cada jugador al final")
     print(f"\nLas fichas del primer jugador son {fichas_1}")
@@ -469,6 +483,3 @@ while True:
             sys.exit()
         play_button.handle_event(event)
     pygame.display.update()
-
-
-        
