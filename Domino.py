@@ -91,55 +91,47 @@ def actualizacionDomino(a,b,domino):
     global contador
     global screen2
     global fichas_images
+    global fichas
     if a == domino[0][0]:
         domino.insert(0, (b, a))
         x = 175
         y= 200
-        try:
+        if (a, b) in fichas:
             rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
-        except ValueError:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90) 
+        else:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90)
         screen2.blit(rotated_image, (x, y))
     elif a == domino[-1][1]:
         domino.append((a, b))
         x = 225
         y= 200
-        try:
+        if (a, b) in fichas:
             rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
-        except ValueError:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90) 
+        else:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90)
         screen2.blit(rotated_image, (x, y))
     elif b == domino[0][0]:
         domino.insert(0, (a, b))
         x = 175
         y= 200
-        try:
+        if (a, b) in fichas:
             rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
-        except ValueError:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90) 
+        else:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90)
         screen2.blit(rotated_image, (x, y))
     else:
         domino.append((b, a))
         x = 225
         y= 200
-        try:
+        if (a, b) in fichas:
             rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
-        except ValueError:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90) 
+        else:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90)
         screen2.blit(rotated_image, (x, y))
     print(domino)
     contador = 0
     pygame.display.update()
     return
-
-def entrada(j):
-    while True:
-        try:
-            j = tuple(map(int, j.split()))
-            break
-        except ValueError:
-            print("Solo se permiten números enteros. Inténtalo de nuevo.")
-    return j
 
 def entrada1(j):
     while True:
@@ -151,6 +143,7 @@ def entrada1(j):
                 break
             except ValueError:
                 print("Solo se permiten números enteros. Inténtalo de nuevo.")
+                break
     return j
 
 
@@ -271,7 +264,7 @@ def game():
                     actualizacionParesJugador(domino[0][0],domino[0][0],paresJugador)
                     actualizacionParesJugador(domino[-1][1],domino[-1][1],paresJugador)
                     continue
-            j = entrada1(caja_texto(5000))
+            j = entrada1(caja_texto(60000))
             while True:
                 if j==():
                     print("Se acabo tu tiempo para jugar")
@@ -361,6 +354,7 @@ def game():
 
 # Función para mostrar la pantalla de "Juego"
 def show_game_screen():
+    global fichas
     global fichas_1
     global fichas_2
     global fichas_3
@@ -443,6 +437,7 @@ def show_game_screen():
             empezar_button.handle_event(event)
         pygame.display.update()
 
+fichas=[]
 fichas_1=[]
 fichas_2=[]
 fichas_3=[]
