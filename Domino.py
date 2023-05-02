@@ -130,6 +130,7 @@ def entrada1():
     return j
 
 def game():
+    
     global fichas_1
     global fichas_2
     global fichas_3
@@ -176,7 +177,7 @@ def game():
         ficha_a_poner = -1
         
         #Juegan los bots
-        if control==0:   
+        if control>4:   
             if domino[-1][1]!=domino[0][0] and (domino[-1][1],domino[-1][1]) in paresJugador and (domino[0][0],domino[0][0]) in paresJugador:
                 print("Puedes jugador dobles, deseas hacerlo?")
                 respuesta=input("Ingresa y para si, en caso contrario, cualquier otra cosa")
@@ -346,6 +347,16 @@ def show_game_screen():
         x += 50
 
     empezar_button = Button(WIDTH/2-25, HEIGHT/2-25, 50, 50, "Play", (255, 255, 255), (0, 128, 0), game)
+
+    font = pygame.font.SysFont('Arial', 24)
+    text_surface = font.render('Escribe aquí', True, (255, 255, 255))
+    input_rect = pygame.Rect(10, 10, 200, 30)
+    color_inactive = pygame.Color('lightskyblue3')
+    color_active = pygame.Color('dodgerblue2')
+    color = color_inactive
+    text = ''
+    active = False    
+
     # Mostrar el botón en la ventana
     empezar_button.draw(screen2)
 
@@ -358,6 +369,47 @@ def show_game_screen():
                 sys.exit()
             empezar_button.handle_event(event)
         pygame.display.update()
+
+        font = pygame.font.SysFont('Arial', 24)
+        text_surface = font.render('Escribe aquí', True, (255, 255, 255))
+        input_rect = pygame.Rect(125, 300, 200, 30)
+        color_inactive = pygame.Color('lightskyblue3')
+        color_active = pygame.Color('dodgerblue2')
+        color = color_inactive
+        text = ''
+        active = False    
+
+        while True:
+            clock = pygame.time.Clock()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Si el usuario hace clic en la caja de texto
+                    if input_rect.collidepoint(event.pos):
+                        active = True
+                    else:
+                        active = False
+                    # Cambiar el color de fondo de la caja de texto
+                    color = color_active if active else color_inactive
+                if event.type == pygame.KEYDOWN:
+                    if active:
+                        if event.key == pygame.K_RETURN:
+                            print(text)
+                            text = ''
+                        elif event.key == pygame.K_BACKSPACE:
+                            text = text[:-1]
+                        else:
+                            text += event.unicode
+            pygame.display.update()
+            # Dibujar la caja de texto
+            pygame.draw.rect(screen, color, input_rect, 2)
+            text_surface = font.render(text, True, (255, 255, 255))
+            screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+            pygame.display.flip()
+            clock.tick(60)
 
 fichas_1=[]
 fichas_2=[]
@@ -390,4 +442,6 @@ while True:
             sys.exit()
         play_button.handle_event(event)
     pygame.display.update()
+
+
         
