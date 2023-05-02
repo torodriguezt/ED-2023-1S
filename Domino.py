@@ -95,39 +95,117 @@ def actualizacionDomino(a,b,domino):
         domino.insert(0, (b, a))
         x = 175
         y= 200
-        rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
+        try:
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
+        except ValueError:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90) 
         screen2.blit(rotated_image, (x, y))
     elif a == domino[-1][1]:
         domino.append((a, b))
         x = 225
         y= 200
-        rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
+        try:
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
+        except ValueError:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90) 
         screen2.blit(rotated_image, (x, y))
     elif b == domino[0][0]:
         domino.insert(0, (a, b))
         x = 175
         y= 200
-        rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
+        try:
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
+        except ValueError:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90) 
         screen2.blit(rotated_image, (x, y))
     else:
         domino.append((b, a))
         x = 225
         y= 200
-        rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
+        try:
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
+        except ValueError:
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90) 
         screen2.blit(rotated_image, (x, y))
     print(domino)
     contador = 0
     pygame.display.update()
     return
 
-def entrada1():
+def entrada(j):
     while True:
         try:
-            j = tuple(map(int, input("Elige la ficha: ").split()))
+            j = tuple(map(int, j.split()))
             break
         except ValueError:
             print("Solo se permiten números enteros. Inténtalo de nuevo.")
     return j
+
+def entrada1(j):
+    while True:
+        if j is None or not isinstance(j, str):
+            print("Entrada inválida. Inténtalo de nuevo.")
+        else:
+            try:
+                j = tuple(map(int, j.split()))
+                break
+            except ValueError:
+                print("Solo se permiten números enteros. Inténtalo de nuevo.")
+    return j
+
+
+def caja_texto(duracion):
+    font = pygame.font.SysFont('Arial', 24)
+    text_surface = font.render('Escribe aquí', True, (255, 255, 255))
+    input_rect = pygame.Rect(125, 300, 200, 30)
+    color_inactive = pygame.Color('lightskyblue3')
+    color_active = pygame.Color('dodgerblue2')
+    color = color_inactive
+    active = True    
+    text=""
+    start_time = pygame.time.get_ticks()
+
+    # Dibujar la caja de texto
+    pygame.draw.rect(screen, color, input_rect, 2)
+    text_surface = font.render(text, True, (255, 255, 255))
+    screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+    pygame.display.flip()
+
+    while active:
+        pygame.draw.rect(screen, (0,0,0), input_rect)
+        #clock = pygame.time.Clock()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Si el usuario hace clic en la caja de texto
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+                    # Cambiar el color de fondo de la caja de texto
+                color = color_active if active else color_inactive
+            if event.type == pygame.KEYDOWN:
+                if active:
+                    if event.key == pygame.K_RETURN:
+                        print(text)
+                        return text
+                    elif event.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                        pygame.display.update()  # Actualizar la pantalla después de eliminar el último carácter
+                    else:
+                        text += event.unicode
+        pygame.draw.rect(screen, color, input_rect, 2)
+        text_surface = font.render(text, True, (255, 255, 255))
+        screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+        pygame.display.update()
+
+        elapsed_time = pygame.time.get_ticks() - start_time
+        if elapsed_time >= duracion:
+            active = False
+            return text
 
 def game():
     
@@ -177,10 +255,11 @@ def game():
         ficha_a_poner = -1
         
         #Juegan los bots
-        if control>4:   
+        if control==0:   
             if domino[-1][1]!=domino[0][0] and (domino[-1][1],domino[-1][1]) in paresJugador and (domino[0][0],domino[0][0]) in paresJugador:
                 print("Puedes jugador dobles, deseas hacerlo?")
-                respuesta=input("Ingresa y para si, en caso contrario, cualquier otra cosa")
+                print("Ingresa y para si, en caso contrario, cualquier otra cosa")
+                respuesta=caja_texto(60000)
                 if respuesta=="y":
                     print("El jugador juega dobles\n")
                     actualizacionFichasJugador(domino[-1][1],domino[-1][1],jugar,control)
@@ -192,17 +271,20 @@ def game():
                     actualizacionParesJugador(domino[0][0],domino[0][0],paresJugador)
                     actualizacionParesJugador(domino[-1][1],domino[-1][1],paresJugador)
                     continue
-            j = entrada1()
+            j = entrada1(caja_texto(5000))
             while True:
+                if j==():
+                    print("Se acabo tu tiempo para jugar")
+                    break
                 if len(j) != 2 and j[0] != 0 or type(j[0])!=int:
                     print("Porfavor ingresa una ficha valida: ")
-                    j = entrada1()
+                    j = entrada1(caja_texto(60000))
                 elif len(j) == 1 and j[0] == 0:
                     break
                 elif j not in jugar and j[::-1] not in jugar:
                     print("No tienes esa ficha")
                     print("Porfavor ingresa una ficha valida: ")
-                    j = entrada1()
+                    j = entrada1(caja_texto(60000))
                 elif j in jugar or j[::-1] in jugar:
                     arriba, abajo = j
                     if arriba == domino[-1][1] or abajo == domino[0][0] or arriba == domino[0][0] or abajo == domino[-1][1]:
@@ -214,7 +296,7 @@ def game():
                         break
                     else:
                         print("Porfavor ingresa una ficha valida: ")
-                        j = entrada1()
+                        j = entrada1(caja_texto(60000))
         else:
             r=random.random()
             #Probabilidad de que el bot pase turno 0.2
@@ -254,7 +336,7 @@ def game():
         if ficha_a_poner == -1:
             contador += 1
             print("Pasa turno")
-            if contador == 8:
+            if contador == 20:
                 print("Se cerro el juego, sin embargo, por suma de puntos:\n")
                 sumar_tuplas = lambda separado: sum(sum(t) for t in separado)
                 ganador = min(range(len(separado)),key=lambda i: sumar_tuplas(separado[i]))
@@ -348,15 +430,6 @@ def show_game_screen():
 
     empezar_button = Button(WIDTH/2-25, HEIGHT/2-25, 50, 50, "Play", (255, 255, 255), (0, 128, 0), game)
 
-    font = pygame.font.SysFont('Arial', 24)
-    text_surface = font.render('Escribe aquí', True, (255, 255, 255))
-    input_rect = pygame.Rect(10, 10, 200, 30)
-    color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
-    color = color_inactive
-    text = ''
-    active = False    
-
     # Mostrar el botón en la ventana
     empezar_button.draw(screen2)
 
@@ -369,47 +442,6 @@ def show_game_screen():
                 sys.exit()
             empezar_button.handle_event(event)
         pygame.display.update()
-
-        font = pygame.font.SysFont('Arial', 24)
-        text_surface = font.render('Escribe aquí', True, (255, 255, 255))
-        input_rect = pygame.Rect(125, 300, 200, 30)
-        color_inactive = pygame.Color('lightskyblue3')
-        color_active = pygame.Color('dodgerblue2')
-        color = color_inactive
-        text = ''
-        active = False    
-
-        while True:
-            clock = pygame.time.Clock()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Si el usuario hace clic en la caja de texto
-                    if input_rect.collidepoint(event.pos):
-                        active = True
-                    else:
-                        active = False
-                    # Cambiar el color de fondo de la caja de texto
-                    color = color_active if active else color_inactive
-                if event.type == pygame.KEYDOWN:
-                    if active:
-                        if event.key == pygame.K_RETURN:
-                            print(text)
-                            text = ''
-                        elif event.key == pygame.K_BACKSPACE:
-                            text = text[:-1]
-                        else:
-                            text += event.unicode
-            pygame.display.update()
-            # Dibujar la caja de texto
-            pygame.draw.rect(screen, color, input_rect, 2)
-            text_surface = font.render(text, True, (255, 255, 255))
-            screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
-
-            pygame.display.flip()
-            clock.tick(60)
 
 fichas_1=[]
 fichas_2=[]
