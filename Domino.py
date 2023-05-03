@@ -4,7 +4,7 @@ import sys
 import os
 
 # Definir dimensiones de la ventana
-WIDTH, HEIGHT = 450,450
+WIDTH, HEIGHT = 500,450
 WINDOW_SIZE = (WIDTH, HEIGHT)
 
 # Inicializar Pygame y crear la ventana
@@ -213,7 +213,7 @@ def imprime_text(m):
     pygame.draw.rect(screen2, (0,0,0), inputr)
     font = pygame.font.SysFont(None,20)
     mensaje = font.render(m, True, "white")
-    screen2.blit(mensaje, (125,90))
+    screen2.blit(mensaje, (50,90))
     pygame.display.update()
     
 def game():
@@ -344,7 +344,7 @@ def game():
             contador += 1
             print("Pasa turno")
             if contador == 20:
-                print("Se cerro el juego, sin embargo, por suma de puntos:\n")
+                imprime_text("Se cerro el juego, sin embargo, por suma de puntos:")
                 sumar_tuplas = lambda separado: sum(sum(t) for t in separado)
                 ganador = min(range(len(separado)),key=lambda i: sumar_tuplas(separado[i]))
                 control = ganador
@@ -365,7 +365,6 @@ def game():
     print(f"Las fichas del segundo jugador son {fichas_2}")
     print(f"Las fichas del tercer jugador son {fichas_3}")
     print(f"Las fichas del cuarto jugador son {fichas_4}")
-
 # Función para mostrar la pantalla de "Juego"
 def show_game_screen():
     global fichas
@@ -468,8 +467,24 @@ ruta_imagen = os.path.join("imagenes", "eliminada.png")
 image = pygame.image.load(ruta_imagen)
 eliminada = pygame.transform.scale(image, (50, 50))
 # Crear un botón para iniciar el juego
+font = pygame.font.SysFont(None,40)
+mensaje = font.render("Bienvenido jugador", True, "white")
+screen.blit(mensaje, (100,90))
+font = pygame.font.SysFont(None,20)
+mensaje = font.render("Porfavor lee las instrucciones y presiona jugar cuando quieras comenzar", True, "white")
+screen.blit(mensaje, (20,150))
+font = pygame.font.SysFont(None,23)
 play_button = Button(WIDTH/2-50, HEIGHT/2-25, 100, 50, "Jugar", (255, 255, 255), (0, 128, 0), show_game_screen)
-
+mensaje = font.render("Tus fichas serán las de la parte inferior", True, "white")
+screen.blit(mensaje, (100,300))
+mensaje=font.render("Solo se mostraran las fichas de los extremos del domino",True,"white")
+screen.blit(mensaje,(40,330))
+mensaje=font.render("Si la ficha que deseas poner es la (5, 4) ingresa 5 4 o 4 5",True,"white")
+screen.blit(mensaje,(45,360))
+mensaje=font.render("La opción de dobles te la dará el sistema cuando sea posible",True,"white")
+screen.blit(mensaje,(20,390))
+mensaje=font.render("Tendrás 30 segundos para jugar tu turno, para pasar presiona 0",True,"white")
+screen.blit(mensaje,(20,410))
 # Mostrar el botón en la ventana
 play_button.draw(screen)
 # Actualizar la ventana
