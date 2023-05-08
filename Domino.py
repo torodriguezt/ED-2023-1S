@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 import os
+import time
 
 # Definir dimensiones de la ventana
 WIDTH, HEIGHT = 500,450
@@ -97,27 +98,27 @@ def actualizacionDomino(a,b,domino):
         x = 175
         y= 200
         if (a, b) in fichas:
-            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90) #r
         else:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90)
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90) #r
         screen2.blit(rotated_image, (x, y))
     elif a == domino[-1][1]:
         domino.append((a, b))
         x = 225
         y= 200
         if (a, b) in fichas:
-            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90) #r
         else:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90)
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90) #r
         screen2.blit(rotated_image, (x, y))
     elif b == domino[0][0]:
         domino.insert(0, (a, b))
         x = 175
         y= 200
         if (a, b) in fichas:
-            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90)
+            rotated_image = pygame.transform.rotate(fichas_images[(a, b)], +90) #r
         else:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90)
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90) #r
         screen2.blit(rotated_image, (x, y))
     else:
         domino.append((b, a))
@@ -126,7 +127,7 @@ def actualizacionDomino(a,b,domino):
         if (a, b) in fichas:
             rotated_image = pygame.transform.rotate(fichas_images[(a, b)], -90)
         else:
-            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], -90)
+            rotated_image = pygame.transform.rotate(fichas_images[(b, a)], +90)
         screen2.blit(rotated_image, (x, y))
     print(domino)
     contador = 0
@@ -255,9 +256,9 @@ def game():
             control = 0
 
         if control!=0:
-            print(f"Turno del bot {control}")
+            imprime_text(f"Turno del jugador {control}")
         else:
-            imprime_text("Turno del jugador")
+            imprime_text("Tu turno")
 
         jugar = separado[control]
         ficha_a_poner = -1
@@ -268,7 +269,7 @@ def game():
                 imprime_text("Puedes jugador dobles, ingresa y para aceptar")
                 respuesta=caja_texto(30000)
                 if respuesta=="y":
-                    print("El jugador juega dobles\n")
+                    imprime_text("El jugador juega dobles\n")
                     actualizacionFichasJugador(domino[-1][1],domino[-1][1],jugar,control)
                     actualizacionDomino(domino[-1][1],domino[-1][1],domino)
                     pygame.display.update()
@@ -281,7 +282,7 @@ def game():
             j = entrada1(caja_texto(30000))
             while True:
                 if j==():
-                    print("Se acabo tu tiempo para jugar")
+                    imprime_text("Se acabo tu tiempo para jugar")
                     break
                 if len(j) != 2 and j[0] != 0 or type(j[0])!=int:
                     imprime_text("Porfavor ingresa una ficha valida: ")
@@ -306,7 +307,7 @@ def game():
         else:
             r=random.random()
             #Probabilidad de que el bot pase turno 0.2
-            if r>0.2:
+            if r>0.1:
                 pp=[]
                 for j in jugar:
                     arriba, abajo = j
@@ -331,7 +332,7 @@ def game():
                                 u1, u2=pp[i]
                     
                 if i1!=-1 and i2!=-1:
-                    print("El jugador juega dobles\n")
+                    imprime_text("El jugador juega dobles\n")
                     actualizacionFichasJugador(d1, d2, jugar, control)
                     actualizacionDomino(d1, d2, domino)
                     actualizacionFichasJugador(u1, u2,jugar, control)
@@ -341,7 +342,11 @@ def game():
         #Pasa turno, cierra juego, etc.
         if ficha_a_poner == -1:
             contador += 1
-            print("Pasa turno")
+            if control!=0:
+                imprime_text(f"Pasa turno el jugador {control}")
+            else:
+                imprime_text(f"Pasaste turno")
+            time.sleep(1)
             if contador == 20:
                 imprime_text("Se cerro el juego, sin embargo, por suma de puntos:")
                 sumar_tuplas = lambda separado: sum(sum(t) for t in separado)
@@ -353,6 +358,7 @@ def game():
         actualizacionFichasJugador(a,b,jugar,control)
         actualizacionDomino(a,b,domino)
         pygame.display.update()
+        time.sleep(2)
     
     if control==0:
       imprime_mensaje("Ganaste el juego en horabuena!!")
