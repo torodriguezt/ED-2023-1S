@@ -256,7 +256,7 @@ def game():
             control = 0
 
         if control!=0:
-            imprime_text(f"Turno del jugador {control}")
+            imprime_text(f"Turno del jugador {control+1}")
         else:
             imprime_text("Tu turno")
 
@@ -343,7 +343,7 @@ def game():
         if ficha_a_poner == -1:
             contador += 1
             if control!=0:
-                imprime_text(f"Pasa turno el jugador {control}")
+                imprime_text(f"Pasa turno el jugador {control+1}")
             else:
                 imprime_text(f"Pasaste turno")
             time.sleep(1)
