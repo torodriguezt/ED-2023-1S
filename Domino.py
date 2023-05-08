@@ -265,7 +265,7 @@ def game():
         #Juegan los bots
         if control==0:   
             if domino[-1][1]!=domino[0][0] and (domino[-1][1],domino[-1][1]) in paresJugador and (domino[0][0],domino[0][0]) in paresJugador:
-                imprime_text("Puedes jugador dobles, presiona y")
+                imprime_text("Puedes jugador dobles, ingresa y para aceptar")
                 respuesta=caja_texto(30000)
                 if respuesta=="y":
                     print("El jugador juega dobles\n")
@@ -284,13 +284,12 @@ def game():
                     print("Se acabo tu tiempo para jugar")
                     break
                 if len(j) != 2 and j[0] != 0 or type(j[0])!=int:
-                    print("Porfavor ingresa una ficha valida: ")
+                    imprime_text("Porfavor ingresa una ficha valida: ")
                     j = entrada1(caja_texto(30000))
                 elif len(j) == 1 and j[0] == 0:
                     break
                 elif j not in jugar and j[::-1] not in jugar:
-                    print("No tienes esa ficha")
-                    print("Porfavor ingresa una ficha valida: ")
+                    imprime_text("No tienes esa ficha, ingresa otra")
                     j = entrada1(caja_texto(30000))
                 elif j in jugar or j[::-1] in jugar:
                     arriba, abajo = j
@@ -302,7 +301,7 @@ def game():
                             actualizacionParesJugador(a,b,paresJugador)
                         break
                     else:
-                        print("Porfavor ingresa una ficha valida: ")
+                        imprime_text("Porfavor ingresa una ficha valida: ")
                         j = entrada1(caja_texto(30000))
         else:
             r=random.random()
